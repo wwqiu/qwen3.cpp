@@ -60,18 +60,20 @@ Attention 内部对比：
 
 ```mermaid
 flowchart LR
-    subgraph Without [无 Cache]
-        A1[Q=Linear(input_all)] --> A2[K=Linear(input_all)]
-        A1 --> A3[V=Linear(input_all)]
+    subgraph nocache [无 Cache]
+        A1["Q: Linear(input_all)"] --> A2["K: Linear(input_all)"]
+        A1 --> A3["V: Linear(input_all)"]
     end
-    subgraph With [有 Cache]
-        B1[Q=Linear(input_new)] --> B2[K_new=Linear(input_new)]
-        B1 --> B3[V_new=Linear(input_new)]
-        B2 --> B4[写入 Cache]
+    subgraph withcache [有 Cache]
+        B1["Q: Linear(input_new)"] --> B2["K_new: Linear(input_new)"]
+        B1 --> B3["V_new: Linear(input_new)"]
+        B2 --> B4["写入 Cache"]
         B3 --> B4
-        B4 --> B5[K_full,V_full = Cache 中的完整 K/V]
+        B4 --> B5["K,V = 历史 + 新增"]
     end
 ```
+
+> 无 Cache 时每次前向都对全部 token 重新计算 K 和 V；有 Cache 时只算新 token 的 K、V，历史部分从缓存读取。
 
 关键变化：**position 参数**不再恒为 0。它告诉模型"当前这批 token 在完整序列中的起始位置"，这样 RoPE 才能算出正确的旋转角度。
 

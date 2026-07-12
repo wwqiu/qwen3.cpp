@@ -427,7 +427,7 @@ std::wstring "你好" → [0x4F60, 0x597D]                       2个宽字符�
 ```
 string (UTF-8) → UTF8ToWide() → wstring → 正则预切分 → WideToUTF8() → string (UTF-8)
 ```
-```
+
 
 **关键点**：
 - **公开接口**：只暴露 `LoadConfig`、`Encode`、`Decode` 三个方法
